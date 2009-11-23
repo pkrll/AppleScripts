@@ -1,3 +1,4 @@
+-- Twitter with NetNewsWire
 on run {}
 	set headlineTitle to false
 	set headlineURL to false
