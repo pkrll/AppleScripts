@@ -1,7 +1,7 @@
 # Set application windows to the right
 
 on run
-	tell application "System Events" to set appName to name of first process whose frontmost is true and visible ­ false
+	tell application "System Events" to set appName to name of first process whose frontmost is true and visible ï¿½ false
 	
 	if appName is "Finder" then
 		setupWindow() -- set properties for Finder window
