@@ -1,6 +1,6 @@
 global defaultLocation, selectedFiles, destination
 on run {}
-	set defaultLocation to alias "Macintosh HD:Users:ardalansamimi" -- Set the default location for the choose folder promt
+	set defaultLocation to alias "Macintosh HD:Users" -- Set the default location for the choose folder promt
 	set selectedFiles to (get selection of application "Finder") -- get selected files
 	
 	if (count of selectedFiles) is greater than 0 then
@@ -40,15 +40,15 @@ end moveFile
 on growlAlert(growlTitle, growlDesc)
 	tell application "GrowlHelperApp"
 		set allNot to {"moveFileGrowl"}
-		register as application Â
-			"moveFileGrowl" all notifications allNot Â
+		register as application ï¿½
+			"moveFileGrowl" all notifications allNot ï¿½
 			default notifications allNot
 		
-		notify with name Â
-			"moveFileGrowl" title Â
-			growlTitle description Â
-			growlDesc application name Â
-			"moveFileGrowl" icon of application Â
+		notify with name ï¿½
+			"moveFileGrowl" title ï¿½
+			growlTitle description ï¿½
+			growlDesc application name ï¿½
+			"moveFileGrowl" icon of application ï¿½
 			"Finder"
 	end tell
 end growlAlert
