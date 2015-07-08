@@ -1,3 +1,4 @@
+-- Toggle status of Caffeine
 on run {}
 	tell application "Caffeine"
 		activate
