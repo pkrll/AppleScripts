@@ -1,3 +1,4 @@
 tell application "RocketFuel"
-toggle
+	activate
+	toggle
 end tell
