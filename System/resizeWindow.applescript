@@ -7,7 +7,7 @@
 -- on CenterWindow.applescript.
 --
 -- Author: Ardalan Samimi
--- Version: 2.0
+-- Version: 2.1.0
 --
 -- Define the global variables
 global listOfSmallApps, listOfLargeApps, listOfXLargeApps, standardSizeXLarge, standardSizeLarge, standardSizeSmall, finderSidebarSize, scriptName, plistFile
@@ -20,25 +20,22 @@ on setUpGlobals()
 	set standardSizeSmall to {height:0.6, width:0.6}
 	set standardSizeLarge to {height:0.75, width:0.75}
 	set standardSizeXLarge to {height:0.8, width:0.85}
-	-- Set the size of Finders sidebar
 	set finderSidebarSize to 205
-	-- Set the name of the center script
+	-- The center window script
 	set scriptName to "CenterWindow.applescript"
-	-- Set and load the property list file
-	set plistFile to (path to preferences folder from user domain)'s POSIX path & "com.zerobytes.resizewindow.plist"
+	set plistFile to (path to preferences folder from user domain)'s POSIX path & "com.saturnfive.resizewindow.plist"
 	loadPlistFile()
 end setUpGlobals
 -- Resizes the app windows
 -- Parameters
 -- appName: Name of application to resize
 on resizeWindow(appName)
-	-- Check if app is not added to the propert list,
+	-- If the app is not added to the propert list,
 	-- then the script needs to set the app settings.
 	if appName is not in listOfSmallApps and appName is not in listOfLargeApps and appName is not in listOfXLargeApps then
 		setNewAppSettings(appName)
 	end if
-	-- Set the prefered size of the
-	-- depending on its category.
+	-- Sets the prefered size of the depending on its category.
 	if listOfSmallApps contains appName then
 		-- Check for relative sizes < 1 is recalculated to percentage
 		if width of standardSizeSmall is less than or equal to 1 then
@@ -77,13 +74,13 @@ on resizeWindow(appName)
 		else
 			set preferedHeight to height of standardSizeXLarge
 		end if
-    else
-        if width of standardSizeSmall is less than or equal to 1 then
-            set preferedWidth to (width of getDesktopBounds()) * (width of standardSizeSmall)
-        else
-            -- Otherwise, treat it as an absolute size
-            set preferedWidth to width of standardSizeSmall
-        end if
+	else
+		if width of standardSizeSmall is less than or equal to 1 then
+			set preferedWidth to (width of getDesktopBounds()) * (width of standardSizeSmall)
+		else
+			-- Otherwise, treat it as an absolute size
+			set preferedWidth to width of standardSizeSmall
+		end if
 	end if
 	-- Set the size
 	try
@@ -134,16 +131,22 @@ on centerWindow()
 end centerWindow
 -- Save a new app to the plist file
 on setNewAppSettings(appName)
-	-- Display the dialog
-	set buttonInteraction to display dialog "" & appName & " has not been added to the ResizeWindow script. What size do you want to set it to (you will only be asked once)?" buttons {"Small", "Large", "XLarge"} default button 2
-	if buttonInteraction = {button returned:"Small"} then
-		set end of listOfSmallApps to appName
-	else if buttonInteraction = {button returned:"Large"} then
-		set end of listOfLargeApps to appName
-	else if buttonInteraction = {button returned:"XLarge"} then
-		set end of listOfXLargeApps to appName
+	set optionList to {"Small", "Large", "XLarge"}
+	set selectedSize to choose from list optionList with prompt "Choose what size " & appName & " should be set to"
+
+	if selectedSize is false then
+		error number -128
+	else
+		if first item of selectedSize = "Small" then
+			set end of listOfSmallApps to appName
+		else if first item of selectedSize = "Large" then
+			set end of listOfLargeApps to appName
+		else if first item of selectedSize = "XLarge" then
+			set end of listOfXLargeApps to appName
+		end if
 	end if
-	set appSize to button returned of buttonInteraction
+
+	set appSize to first item of selectedSize
 	saveToPlistFile(appName, appSize)
 end setNewAppSettings
 -- Save item to the property list
@@ -160,8 +163,8 @@ end saveToPlistFile
 on loadPlistFile()
 	if doesFileExist() then
 		tell application "System Events"
-            tell property list file plistFile
-                set content to value of contents
+			tell property list file plistFile
+				set content to value of contents
 				set listOfSmallApps to Small of content
 				set listOfLargeApps to Large of content
 				set listOfXLargeApps to XLarge of content
