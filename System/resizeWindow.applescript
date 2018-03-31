@@ -18,8 +18,8 @@ global listOfSmallApps, listOfLargeApps, listOfXLargeApps, standardSizeXLarge, s
 on setUpGlobals()
 	-- The size standards
 	set standardSizeSmall to {height:0.6, width:0.6}
-	set standardSizeLarge to {height:0.75, width:0.75}
-	set standardSizeXLarge to {height:0.8, width:0.85}
+	set standardSizeLarge to {height:0.8, width:0.75}
+	set standardSizeXLarge to {height:0.9, width:0.85}
 	set finderSidebarSize to 205
 	-- The center window script
 	set scriptName to "CenterWindow.applescript"
@@ -58,7 +58,7 @@ on resizeWindow(appName)
 		end if
 
 		if height of standardSizeLarge is less than or equal to 1 then
-			set preferedHeight to (height of getDesktopBounds()) * (height of standardSizeLarge)
+			set preferedHeight to (height of getDesktopBounds() - getDockDimensions()) * (height of standardSizeLarge)
 		else
 			set preferedHeight to height of standardSizeLarge
 		end if
@@ -70,7 +70,7 @@ on resizeWindow(appName)
 		end if
 
 		if height of standardSizeXLarge is less than or equal to 1 then
-			set preferedHeight to (height of getDesktopBounds()) * (height of standardSizeXLarge)
+			set preferedHeight to (height of getDesktopBounds() - getDockDimensions()) * (height of standardSizeXLarge)
 		else
 			set preferedHeight to height of standardSizeXLarge
 		end if
@@ -192,6 +192,15 @@ on doesFileExist()
 	tell application "System Events" to set isFileThere to exists of alias plistFile
 	return isFileThere
 end doesFileExist
+
+on getDockDimensions()
+	tell application "System Events" to tell process "Dock"
+		set dockDimensions to size in list 1
+		set dockheight to item 2 of dockDimensions
+	end tell
+	-- Returns only height
+	return dockheight
+end getDockDimensions
 -- Run method
 on run
 	-- Set up the globals
